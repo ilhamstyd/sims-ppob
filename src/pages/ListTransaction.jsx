@@ -66,7 +66,7 @@ const ListTransaction = () => {
         </div>
           <div className="row mt-4">
             <p style={{fontWeight:"600"}}>Semua Transaksi</p>
-        {profiles?.merges?.transaction.map((data, i) => (
+        {profiles?.merges?.transaction?.map((data, i) => (
             <div className='card shadow pt-2 ps-3 mb-3' key={i}>
                 <div className='d-flex'>
                 <p className='fs-4 fw-semibold col-md-6 text-dark text-start'>{data.total_amount}</p>

@@ -34,7 +34,7 @@ const ProfileEdit = () => {
   };
   const navigate = useNavigate();
   const handleLogout = () => {
-    setAuthToken(localStorage.removeItem("authToken"));
+    localStorage.removeItem("authToken")
     navigate("/");
   };
 

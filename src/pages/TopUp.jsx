@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TopUpMoney, fetchBalance, fetchProfile } from '../features/ProfileSlice';
 import { useNavigate } from 'react-router-dom';
 import { Rupiah } from '../components/FormatIdr';
+import Swal from 'sweetalert2';
 
 
 const TopUp = () => {
@@ -20,19 +21,43 @@ const TopUp = () => {
     dispatch(fetchProfile());
   }, [dispatch]);
 
-  const [saldo, setSaldo] = useState();
-
-  const navigate = useNavigate()
-
-  const handleTopUp = async (e) => {
+  const [saldo, setSaldo] = useState("");
+ 
+  const handleTopUp = async(e) => {
     e.preventDefault();
-    console.log("Submitting form...");
-    const formData = {
-      top_up_amount: saldo,
-    };
-    dispatch(TopUpMoney(formData));
-    setSaldo(0);
-  };
+    try {
+      if (saldo < 10000 || saldo > 1000000) {
+        Swal.fire({
+          position:'center',
+          icon: 'error',
+          title: 'Gagal Top Up',
+          text: 'minimal top up RP 10.000 dan maksimal RP 1.000.000',
+          confirmButtonColor:'red',
+        });
+        return; // Stop further execution
+      }
+      const formData = {
+        top_up_amount: saldo,
+      };
+       await dispatch(TopUpMoney(formData));
+      setSaldo("");
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: `Berhasil Top Up Sejumlah ${Rupiah(saldo)}`,
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      } catch (error){
+      Swal.fire({
+        position:'center',
+        icon: 'error',
+        title: 'Gagal Top Up',
+        text: 'minimal top up RP 10.000 dan maksimal RP 1.000.000',
+        confirmButtonColor:'red',
+      });
+    }
+  }
 
   return (
     <div>

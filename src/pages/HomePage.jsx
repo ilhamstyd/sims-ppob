@@ -16,8 +16,9 @@ export const HomePage = () => {
   const [showBalance, setShowBalance] = useState(false);
 
   const dispatch = useDispatch();
-  const profiles = useSelector((state) => state.profile);
-  const banner = profiles.merges.banner;
+  const profiles = useSelector((state) => state.profile.data);
+  const banner = useSelector((state) => state.profile.merges.banner);
+  const balance = useSelector((state) => state.profile.balance);
   const [index, setIndex] = useState(0);
 
   const handleSelect = (selectedIndex) => {
@@ -25,11 +26,11 @@ export const HomePage = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchBalance());
     dispatch(fetchProfile());
+    dispatch(fetchBalance());
     dispatch(fetchServices());
     dispatch(fetchBanner());
-  }, [dispatch]);
+  }, []);
   const ToggleBalanceVisibility = () => {
     setShowBalance(!showBalance);
   };
@@ -40,17 +41,17 @@ export const HomePage = () => {
           <div className="col-md-5">
             <Image
               src={
-                profiles?.data?.profile_image ===
-                "https://minio.nutech-integrasi.app/take-home-test/null"
-                  ? profile
-                  : profiles?.data?.profile_image
+                profiles?.profile_image === "https://minio.nutech-integrasi.app/take-home-test/null" ? (
+                profile
+                ):(
+                profiles?.profile_image)
               }
               style={{ objectFit: "cover", margin: "10px", padding: "10px" }}
             />
             <div>
               <p style={{ margin: 0, padding: 0 }}>Selamat Datang</p>
               <h5>
-                {profiles?.data?.first_name} {profiles?.data?.last_name}
+                {profiles?.first_name} {profiles?.last_name}
               </h5>
             </div>
           </div>
@@ -68,7 +69,7 @@ export const HomePage = () => {
                 <p>saldo anda</p>
                 {showBalance ? (
                   <h3>
-                    {Rupiah(profiles?.balance)}
+                    {Rupiah(balance)}
                   </h3>
                 ) : (
                   <h3>

@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { Rupiah } from "../components/FormatIdr";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDollar, faDollarSign, faMoneyCheckDollar, faSackDollar } from "@fortawesome/free-solid-svg-icons";
+import Swal from "sweetalert2";
 
 export const Profile = () => {
 
@@ -28,6 +29,13 @@ export const Profile = () => {
         service_code: selectedService?.service_code,
       };
       dispatch(TransactioAsync(formData));
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: `Berhasil Bayar ${selectedService?.service_name}`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
     };
 
     useEffect(() => {

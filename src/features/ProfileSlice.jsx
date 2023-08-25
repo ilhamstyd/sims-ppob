@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import { profile, setAuthToken, profileEdit, ProfileEditImage, Balance, Services, Banner, Topup, Transaction, ListTransaction } from '../config/api';
+import Swal from 'sweetalert2';
 
 const profileAdapter = createEntityAdapter();
 export const fetchProfile = createAsyncThunk(
@@ -125,7 +126,12 @@ export const listTransactionAsync = createAsyncThunk(
     console.log("ini list transaction", response.data.data);
     return response.data.data.records;
   } catch (error) {
-      console.log("kesalahan list transaction :", error)
+    Swal.fire({
+      position:'center',
+      icon: 'error',
+      title: 'Gagal Top Up',
+      text: `${error.response.data.message}`,
+    });
     throw error;
   }
 }

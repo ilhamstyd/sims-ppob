@@ -4,6 +4,7 @@ import profile_photos from "../assets/Profile.png"
 import { useDispatch, useSelector } from 'react-redux';
 import { TopUpMoney, fetchBalance, fetchProfile } from '../features/ProfileSlice';
 import { useNavigate } from 'react-router-dom';
+import { Rupiah } from '../components/FormatIdr';
 
 
 const TopUp = () => {
@@ -31,7 +32,6 @@ const TopUp = () => {
     };
     dispatch(TopUpMoney(formData));
     setSaldo(0);
-    navigate("/home")
   };
 
   return (
@@ -65,7 +65,7 @@ const TopUp = () => {
                 <p>saldo anda</p>
                 {showBalance ? (
                   <h3>
-                    RP.<span>{profiles?.balance}</span>
+                    {Rupiah(profiles?.balance)}
                   </h3>
                 ) : (
                   <h3>

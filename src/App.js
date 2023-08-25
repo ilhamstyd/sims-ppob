@@ -14,7 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/home" element={<HomePage />} />
-          <Route path="/profile-buy" element={<Profile />} />
+          <Route path="/profile-buy/:id" element={<Profile />} />
           <Route path="/top-up" element={<TopUp />} />
           <Route path="/list-transaction" element={<ListTransaction />} />
           <Route path="/myprofile" element={<ProfileEdit />} />

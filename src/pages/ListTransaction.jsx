@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Container, Image } from 'react-bootstrap';
 import profile_photos from "../assets/Profile.png";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchBalance, fetchProfile, listTransactionAsync } from '../features/ProfileSlice';
+import { fetchBalance, fetchProfile, incrementOffset, listTransactionAsync } from '../features/ProfileSlice';
+import { Rupiah } from '../components/FormatIdr';
+import TanggalComponent from '../components/FormatDate';
 
 const ListTransaction = () => {
 
@@ -12,11 +14,17 @@ const ListTransaction = () => {
     };
   const dispatch = useDispatch();
   const profiles = useSelector((state) => state.profile);
+  const offset = useSelector((state) => state.profile.offset)
   useEffect(() => {
     dispatch(fetchBalance());
     dispatch(fetchProfile());
-    dispatch(listTransactionAsync());
-    }, [dispatch])
+    dispatch(listTransactionAsync({offset, limit:5}));
+    }, [dispatch]);
+
+    const handleShowMore = () => {
+      dispatch(incrementOffset());
+      dispatch(listTransactionAsync({offset, limit:5}));
+    };
   return (
     <div>
       <Container>
@@ -48,7 +56,7 @@ const ListTransaction = () => {
                 <p>saldo anda</p>
                 {showBalance ? (
                   <h3>
-                    RP.<span>{profiles?.balance}</span>
+                    {Rupiah(profiles?.balance)}
                   </h3>
                 ) : (
                   <h3>
@@ -69,13 +77,17 @@ const ListTransaction = () => {
         {profiles?.merges?.transaction?.map((data, i) => (
             <div className='card shadow pt-2 ps-3 mb-3' key={i}>
                 <div className='d-flex'>
-                <p className='fs-4 fw-semibold col-md-6 text-dark text-start'>{data.total_amount}</p>
+                  {data.description === "Top Up Balance" ? (
+                    <p className='fs-4 fw-semibold col-md-6 text-success text-start'>+{Rupiah(data.total_amount)}</p>
+                    ) : (
+                    <p className='fs-4 fw-semibold col-md-6 text-danger text-start'>-{Rupiah(data.total_amount)}</p>
+                  )}
                 <p className='col-md-6 text-end'>{data.description}</p>
                 </div>
-                <p className='text-secondary'>{data.invoice_number}</p>
+                <p className='text-secondary'>{data.created_on}</p>
             </div>
         ))}
-            <div className='my-5 text-center fw-bold text-danger'>Show more</div>
+            <div className='my-5 text-center fw-bold text-danger' onClick={handleShowMore} style={{cursor:"pointer"}}>Show more</div>
           </div>
       </Container>
     </div>

@@ -4,28 +4,30 @@ import { useEffect, useState } from "react";
 import Listrik from "../assets/Listrik.png"
 import { useDispatch, useSelector } from "react-redux";
 import { TransactioAsync, fetchBalance, fetchProfile, fetchServices } from "../features/ProfileSlice";
+import { useParams } from "react-router-dom";
+import { Rupiah } from "../components/FormatIdr";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDollar, faDollarSign, faMoneyCheckDollar, faSackDollar } from "@fortawesome/free-solid-svg-icons";
 
 export const Profile = () => {
 
     const [showBalance, setShowBalance] = useState(false);
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const profiles = useSelector((state) => state.profile);
+  const { id } = useParams();
+  const services = useSelector((state) => state.profile.merges.services);
+  const selectedService = services[id];
     const toggleBalanceVisibility = () => {
       setShowBalance(!showBalance);
     };
 
-    const serviceCode = "PLN";
-
-    const [saldo, setSaldo] = useState("");
     const handleTransaction = (e) => {
       e.preventDefault();
-      console.log("Submitting form...");
       const formData = {
-        service_code: serviceCode,
+        service_code: selectedService?.service_code,
       };
       dispatch(TransactioAsync(formData));
-      setSaldo("");
     };
 
     useEffect(() => {
@@ -64,7 +66,7 @@ export const Profile = () => {
                 <p>saldo anda</p>
                 {showBalance ? (
                   <h3>
-                    RP.<span>{profiles?.balance}</span>
+                   {Rupiah(profiles?.balance)}
                   </h3>
                 ) : (
                   <h3>
@@ -81,7 +83,7 @@ export const Profile = () => {
           </div>
           <div className="mt-4">
             <p style={{fontWeight:"500"}}>Pembayaran</p>
-            <p className="fw-bold"><Image src={Listrik} />Listrik Prabayar</p>
+            <p className="fw-bold"><Image src={selectedService?.service_icon} />{selectedService?.service_name}</p>
           </div>
           <Form>
           <Form.Group
@@ -89,13 +91,11 @@ export const Profile = () => {
             className="mb-3"
             controlId="formGroupEmail">
             <InputGroup hasValidation>
-            <InputGroup.Text id="inputGroupPrepend">RP</InputGroup.Text>
+            <InputGroup.Text id="inputGroupPrepend"><FontAwesomeIcon icon={faMoneyCheckDollar}/></InputGroup.Text>
             <Form.Control type="number"
             aria-describedby="inputGroupPrepend"
-            placeholder="masukan nominal"
-            value={saldo}
-            onChange={(e) => setSaldo(e.target.value)}
-            required/>
+            placeholder={Rupiah(selectedService?.service_tariff)}
+            disabled/>
             </InputGroup>
             </Form.Group>
             <Button className="w-100" variant="danger" onClick={handleTransaction}>Bayar</Button>

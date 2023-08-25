@@ -118,11 +118,11 @@ export const TransactioAsync = createAsyncThunk(
 );
 export const listTransactionAsync = createAsyncThunk(
   'profile/listTransaction',
-  async () => {
+  async ({offset, limit}) => {
     setAuthToken(localStorage.getItem("authToken"))
   try {
-    const response = await ListTransaction()
-    console.log("ini list transaction", response.data.data.records);
+    const response = await ListTransaction(offset, limit)
+    console.log("ini list transaction", response.data.data);
     return response.data.data.records;
   } catch (error) {
       console.log("kesalahan list transaction :", error)
@@ -139,12 +139,18 @@ const profileSlice = createSlice({
       balance:null,
       services:null,
       banner:null,
-      transaction:null,
+      transaction:[],
+      offset:0,
+      limit:5,
     },
     error: null,
     status: 'idle',
   },
-  reducers: {},
+  reducers: {
+    incrementOffset: (state) => {
+      state.offset += state.limit;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProfile.fulfilled, (state, action) => {
@@ -198,10 +204,11 @@ const profileSlice = createSlice({
       })
       .addCase(listTransactionAsync.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.transaction = action.payload;
+        state.merges.transaction =state.merges.transaction.concat(action.payload);
       });
   },
 });
 
 export default profileSlice.reducer;
 export const { selectAll: selectAllprofiles } = profileAdapter.getSelectors((state) => state.profile.merges);
+export const {incrementOffset} = profileSlice.actions;

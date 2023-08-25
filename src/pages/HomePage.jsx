@@ -10,13 +10,13 @@ import {
   fetchProfile,
   fetchServices,
 } from "../features/ProfileSlice";
+import { Rupiah } from "../components/FormatIdr";
 
 export const HomePage = () => {
   const [showBalance, setShowBalance] = useState(false);
 
   const dispatch = useDispatch();
   const profiles = useSelector((state) => state.profile);
-  const services = profiles.merges.services;
   const banner = profiles.merges.banner;
   const [index, setIndex] = useState(0);
 
@@ -68,7 +68,7 @@ export const HomePage = () => {
                 <p>saldo anda</p>
                 {showBalance ? (
                   <h3>
-                    RP.<span>{profiles?.balance}</span>
+                    {Rupiah(profiles?.balance)}
                   </h3>
                 ) : (
                   <h3>
@@ -85,13 +85,9 @@ export const HomePage = () => {
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="d-flex">
-            {services?.map((banner, i) => (
-              <Services key={i} banner={banner} />
-            ))}
+        <div className="d-flex">
+            <Services/>
           </div>
-        </div>
         <p style={{ fontWeight: "600", marginTop: "40px" }}>
           Temukan promo menarik
         </p>

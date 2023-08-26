@@ -8,7 +8,6 @@ import { fetchServices } from "../features/ProfileSlice";
 export const Services = () => {
   
   const banner = useSelector((state) => state.profile.merges.services);
-  //const services = profiles.merges.services;
   
   const dispatch = useDispatch();
   useEffect(() => {

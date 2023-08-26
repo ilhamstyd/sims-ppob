@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
-import { profile, setAuthToken, profileEdit, ProfileEditImage, Balance, Services, Banner, Topup, Transaction, ListTransaction } from '../config/api';
+import { profile, setAuthToken, profileEdit, ProfileEditImage, Balance, Services, Banner, Topup, Transaction, ListTransaction, API } from '../config/api';
 import Swal from 'sweetalert2';
 
 const profileAdapter = createEntityAdapter();
@@ -65,8 +65,8 @@ export const editProfileImageAsync = createAsyncThunk(
       setAuthToken(localStorage.getItem("authToken"))
     try {
       const response = await Services()
-      console.log("ini service :", response.data.data);
-      return response.data.data;
+      console.log("ini service :", response.data);
+      return response.data;
     } catch (error) {
         console.log("kesalahan services :", error)
       throw error;
@@ -99,6 +99,12 @@ export const TopUpMoney = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       console.log('kesalahan top up :', error);
+      Swal.fire({
+        position:'center',
+        icon: 'error',
+        title: 'Gagal Top Up',
+        text: `${error.response.data.message}`,
+      });
       throw error.response.data.message;
     }
   }
@@ -119,19 +125,14 @@ export const TransactioAsync = createAsyncThunk(
 );
 export const listTransactionAsync = createAsyncThunk(
   'profile/listTransaction',
-  async ({offset, limit}) => {
+  async (offset) => {
     setAuthToken(localStorage.getItem("authToken"))
   try {
-    const response = await ListTransaction(offset, limit)
+    const response = await API.get(`/transaction/history?offset=${offset}&limit=5`)
     console.log("ini list transaction", response.data.data);
-    return response.data.data.records;
+    return { data : response.data.data, offset};
   } catch (error) {
-    Swal.fire({
-      position:'center',
-      icon: 'error',
-      title: 'Gagal Top Up',
-      text: `${error.response.data.message}`,
-    });
+    console.log("kesalahan List Transaction :", error)
     throw error;
   }
 }
@@ -147,21 +148,16 @@ const profileSlice = createSlice({
       banner:null,
       transaction:[],
       offset:0,
-      limit:5,
     },
     error: null,
     status: 'idle',
   },
-  reducers: {
-    incrementOffset: (state) => {
-      state.offset += state.limit;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.status = 'success';
-        state.data = action.payload;
+        state.merges.data = action.payload;
       })
       .addCase(editProfileAsync.pending, (state) => {
         state.status = 'loading';
@@ -169,7 +165,7 @@ const profileSlice = createSlice({
       })
       .addCase(editProfileAsync.fulfilled, (state, action) => {
         state.status = 'success';
-        state.data = action.payload;
+        state.merges.data = action.payload;
       })
       .addCase(editProfileAsync.rejected, (state, action) => {
         state.status = 'failed';
@@ -181,7 +177,7 @@ const profileSlice = createSlice({
       })
       .addCase(editProfileImageAsync.fulfilled, (state, action) => {
         state.status = 'success';
-        state.data = action.payload;
+        state.merges.data = action.payload;
       })
       .addCase(editProfileImageAsync.rejected, (state, action) => {
         state.status = 'failed';
@@ -189,12 +185,11 @@ const profileSlice = createSlice({
       })
       .addCase(fetchBalance.fulfilled, (state, action) => {
         state.status = 'success';
-        state.data = action.payload;
-        state.balance = action.payload.balance;
+        state.merges.balance = action.payload.balance;
       })
       .addCase(fetchServices.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.services = action.payload;
+        state.merges.services = action.payload.data;
       })
       .addCase(fetchBanner.fulfilled, (state, action) => {
         state.status = 'success';
@@ -210,11 +205,11 @@ const profileSlice = createSlice({
       })
       .addCase(listTransactionAsync.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.transaction =state.merges.transaction.concat(action.payload);
+        state.merges.transaction = [...state.merges.transaction, action.payload];
+        state.merges.offset = action.payload.offset + 5;
       });
   },
 });
 
 export default profileSlice.reducer;
 export const { selectAll: selectAllprofiles } = profileAdapter.getSelectors((state) => state.profile.merges);
-export const {incrementOffset} = profileSlice.actions;

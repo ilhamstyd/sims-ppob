@@ -1,24 +1,16 @@
-import { Carousel, Container, Image } from "react-bootstrap";
-import profile from "../assets/Profile.png";
+import { Carousel, Container} from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { Services } from "../components/Sevices";
 import { BannerHome } from "../components/Banner";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchBalance,
-  fetchBanner,
-  fetchProfile,
-  fetchServices,
-} from "../features/ProfileSlice";
-import { Rupiah } from "../components/FormatIdr";
+import { fetchBanner } from "../features/ProfileSlice";
+import { Navigationbar } from "../components/Navbar";
+import ComponentProfile from "../components/ComponentProfile";
 
 export const HomePage = () => {
-  const [showBalance, setShowBalance] = useState(false);
 
   const dispatch = useDispatch();
-  const profiles = useSelector((state) => state.profile.data);
   const banner = useSelector((state) => state.profile.merges.banner);
-  const balance = useSelector((state) => state.profile.balance);
   const [index, setIndex] = useState(0);
 
   const handleSelect = (selectedIndex) => {
@@ -26,78 +18,29 @@ export const HomePage = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchProfile());
-    dispatch(fetchBalance());
-    dispatch(fetchServices());
     dispatch(fetchBanner());
-  }, []);
-  const ToggleBalanceVisibility = () => {
-    setShowBalance(!showBalance);
-  };
+  }, [dispatch]);
   return (
     <>
+      <Navigationbar />
       <Container className="">
-        <div className="row ms-3">
-          <div className="col-md-5">
-            <Image
-              src={
-                profiles?.profile_image === "https://minio.nutech-integrasi.app/take-home-test/null" ? (
-                profile
-                ):(
-                profiles?.profile_image)
-              }
-              style={{ objectFit: "cover", margin: "10px", padding: "10px" }}
-            />
-            <div>
-              <p style={{ margin: 0, padding: 0 }}>Selamat Datang</p>
-              <h5>
-                {profiles?.first_name} {profiles?.last_name}
-              </h5>
-            </div>
-          </div>
-          <div className="col-md-7">
-            <div
-              style={{
-                backgroundImage: `url(${require("../assets/Background.png")})`,
-                backgroundSize: "100%",
-                flexDirection: "column",
-                padding: "10px",
-                margin: "0px",
-              }}
-            >
-              <div className="text-light">
-                <p>saldo anda</p>
-                {showBalance ? (
-                  <h3>
-                    {Rupiah(balance)}
-                  </h3>
-                ) : (
-                  <h3>
-                    RP.<span>•••••••</span>
-                  </h3>
-                )}
-                <p
-                  style={{ cursor: "pointer", marginTop: "17px" }}
-                  onClick={ToggleBalanceVisibility}
-                >
-                  {showBalance ? "sembunyikan saldo" : "lihat saldo"}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ComponentProfile/>
         <div className="d-flex">
-            <Services/>
-          </div>
+          <Services />
+        </div>
         <p style={{ fontWeight: "600", marginTop: "40px" }}>
           Temukan promo menarik
         </p>
         <div className="">
           <div className="">
-            <Carousel activeIndex={index} onSelect={handleSelect} style={{display:"flex"}}>
+            <Carousel
+              activeIndex={index}
+              onSelect={handleSelect}
+              style={{ display: "flex" }}
+            >
               <Carousel.Item>
                 {banner?.map((bannerImg, i) => (
-                  <BannerHome key={i} data={bannerImg}/>
+                  <BannerHome key={i} data={bannerImg} />
                 ))}
               </Carousel.Item>
             </Carousel>

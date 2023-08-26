@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {fetchProfile,editProfileAsync,editProfileImageAsync} from "../features/ProfileSlice";
 import { setAuthToken } from "../config/api";
 import { useNavigate } from "react-router-dom";
+import { Navigationbar } from "../components/Navbar";
+import Swal from "sweetalert2";
 
 const ProfileEdit = () => {
   const [inputDisabled, setInputDisabled] = useState(true);
@@ -14,7 +16,7 @@ const ProfileEdit = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
-  const handleEditProfile = async () => {
+  const handleEditProfile = () => {
     if (inputDisabled) {
       setInputDisabled(false);
       setEditButtonText("Simpan");
@@ -41,23 +43,35 @@ const ProfileEdit = () => {
   const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
-    if (file) {
       if (file.size <= 100 * 1024 && allowedImageTypes.includes(file.type)) {
         try {
           const formData = new FormData();
           formData.append("file", file);
           dispatch(editProfileImageAsync(formData));
+          Swal.fire({
+            position:'center',
+            icon: 'success',
+            title: 'Sukses Mengubah Foto',
+            showConfirmButton: false,
+            timer: 1500,
+          });
         } catch (error) {
           console.log("Error updating profile image:", error);
         }
       } else {
-        console.log("Image size exceeds the limit (100KB)");
+        Swal.fire({
+          position:'center',
+          icon: 'error',
+          title: 'Gagal Mengubah Foto',
+          text: `maksimal size Foto 100kb`,
+          confirmButtonColor: "red",
+        });
       }
-    }
+    
   };
 
   const dispatch = useDispatch();
-  const profiles = useSelector((state) => state.profile.data);
+  const profiles = useSelector((state) => state.profile.merges.data);
   useEffect(() => {
     dispatch(fetchProfile());
   }, [dispatch]);
@@ -70,6 +84,7 @@ const ProfileEdit = () => {
 
   return (
     <>
+    <Navigationbar/>
       <div className="text-center">
         <Image src={profiles?.profile_image === "https://minio.nutech-integrasi.app/take-home-test/null" ? (
               profile

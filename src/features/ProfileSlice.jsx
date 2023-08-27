@@ -79,7 +79,6 @@ export const editProfileImageAsync = createAsyncThunk(
       setAuthToken(localStorage.getItem("authToken"))
     try {
       const response = await Banner()
-      console.log("ini banner", response.data);
       return response.data.data;
     } catch (error) {
         console.log("kesalahan banner :", error)
@@ -93,8 +92,7 @@ export const TopUpMoney = createAsyncThunk(
   async (profileData) => {
     setAuthToken(localStorage.getItem('authToken'));
     try {
-      const response = await Topup(profileData); // Use your API function to update profile
-      console.log("ini dari top up", response.data.data)
+      const response = await Topup(profileData);
       return response.data.data;
     } catch (error) {
       console.log('kesalahan top up :', error);
@@ -127,8 +125,7 @@ export const listTransactionAsync = createAsyncThunk(
   async (offset) => {
     setAuthToken(localStorage.getItem("authToken"))
   try {
-    const response = await API.get(`/transaction/history?offset=${offset}&limit=5`)
-    console.log("ini list transaction", response.data.data);
+    const response = await API.get(`/transaction/history?offset=${offset}&limit=5`);
     return { data : response.data.data, offset};
   } catch (error) {
     console.log("kesalahan List Transaction :", error)

@@ -16,7 +16,6 @@ const ComponentProfile = () => {
   const dispatch = useDispatch();
   const profiles = useSelector((state) => state.profile.merges);
   useEffect(() => {
-    console.log("lagi dibenerin :", profiles);
     dispatch(fetchProfile());
   }, [dispatch])
 

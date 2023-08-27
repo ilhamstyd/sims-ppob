@@ -202,6 +202,10 @@ const profileSlice = createSlice({
         state.status = 'success';
         state.merges.balance = action.payload;
       })
+      .addCase(TransactioAsync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error;
+      })
       .addCase(listTransactionAsync.fulfilled, (state, action) => {
         state.status = 'success';
         state.merges.transaction = action.payload

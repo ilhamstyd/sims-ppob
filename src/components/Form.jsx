@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerUserAsync, loginUserAsync} from "../features/Slice";
 import { useNavigate } from "react-router-dom";
 import { setAuthToken } from "../config/api";
+import Swal from "sweetalert2";
 
 export const FormRegister = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -26,7 +27,18 @@ export const FormRegister = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting form...");
+    if (confirmPassword !== password) {
+      // Tampilkan alert jika konfirmasi password tidak sesuai
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: "Gagal registrasi",
+        text: "Konfirmasi password harus sama dengan password pertama",
+        showConfirmButton: false,
+        timer: 2000,
+      })
+      return;
+    }
     const formData = {
       email: email,
       first_name: firstName,
@@ -83,6 +95,7 @@ export const FormRegister = () => {
                 md={8}
                 className="mb-3"
                 controlId="formGroupEmail"
+                aria-required
               >
                 <Form.Label>Email address</Form.Label>
                 <InputGroup>
@@ -206,7 +219,7 @@ export const FormRegister = () => {
                 </Alert>
               ) : users.status === "failed" ? (
                 <Alert variant="danger" className="mt-3">
-                  Registrasi gagal.
+                  Registrasi gagal .{users.error}
                 </Alert>
               ) : null}
               <p className="mt-3">

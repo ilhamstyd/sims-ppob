@@ -1,7 +1,7 @@
 import { Container, Form, Image, InputGroup, Col, Button } from "react-bootstrap";
 import { useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { TransactioAsync, fetchServices } from "../features/ProfileSlice";
+import { TransactioAsync, fetchBalance, fetchServices } from "../features/ProfileSlice";
 import { useParams } from "react-router-dom";
 import { Rupiah } from "../components/FormatIdr";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,26 +15,44 @@ export const Profile = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const services = useSelector((state) => state.profile.merges.services);
-  const selectedService = services[id];
+  const selectedService = services && services[id];
 
-    const handleTransaction = (e) => {
-      e.preventDefault();
-      const formData = {
-        service_code: selectedService?.service_code,
-      };
-      dispatch(TransactioAsync(formData));
+  const handleTransaction = (e) => {
+    e.preventDefault();
+    const serviceCode = selectedService?.service_code;
+    const formData = {
+      service_code: serviceCode,
+    };
+    dispatch(TransactioAsync(formData))
+    .then((result) => {  
+      console.log("then thenn",result)
+    if (result?.type === "profile/transaction/rejected") {
       Swal.fire({
         position: "center",
-        icon: "success",
-        title: `Berhasil Bayar ${selectedService?.service_name}`,
+        icon: "error",
+        title: `Gagal membayar ${selectedService?.service_name}`,
+        text: "Saldo tidak mencukupi, silahkan Top Up",
         showConfirmButton: false,
         timer: 1500,
       });
-    };
+    } else {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: `Berhasil membayar ${selectedService?.service_name}`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+    })
+  };
+  
 
     useEffect(() => {
     dispatch(fetchServices());
-    }, [dispatch])
+    dispatch(fetchBalance());
+    }, [dispatch]);
+
   return (
     <>
     <Navigationbar/>
@@ -56,6 +74,7 @@ export const Profile = () => {
             <InputGroup.Text id="inputGroupPrepend"><FontAwesomeIcon icon={faMoneyCheckDollar}/></InputGroup.Text>
             <Form.Control type="number"
             aria-describedby="inputGroupPrepend"
+            value={selectedService?.service_code}
             placeholder={Rupiah(selectedService?.service_tariff)}
             disabled/>
             </InputGroup>

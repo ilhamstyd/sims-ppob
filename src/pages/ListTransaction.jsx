@@ -5,7 +5,6 @@ import {listTransactionAsync} from "../features/ProfileSlice";
 import { Rupiah } from "../components/FormatIdr";
 import { Navigationbar } from "../components/Navbar";
 import ComponentProfile from "../components/ComponentProfile";
-import TanggalComponent from "../components/FormatDate";
 import { format, parseISO } from "date-fns";
 
 const ListTransaction = () => {

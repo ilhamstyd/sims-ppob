@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
-import { loginUser, registerUser, setAuthToken } from '../config/api';
+import { loginUser, registerUser} from '../config/api';
 
 const userAdapter = createEntityAdapter();
 

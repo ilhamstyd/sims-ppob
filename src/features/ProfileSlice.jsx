@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
-import { profile, setAuthToken, profileEdit, ProfileEditImage, Balance, Services, Banner, Topup, Transaction, ListTransaction, API } from '../config/api';
+import { profile, setAuthToken, profileEdit, ProfileEditImage, Balance, Services, Banner, Topup, Transaction, API } from '../config/api';
 import Swal from 'sweetalert2';
 
 const profileAdapter = createEntityAdapter();
@@ -65,7 +65,6 @@ export const editProfileImageAsync = createAsyncThunk(
       setAuthToken(localStorage.getItem("authToken"))
     try {
       const response = await Services()
-      console.log("ini service :", response.data);
       return response.data;
     } catch (error) {
         console.log("kesalahan services :", error)
@@ -205,7 +204,7 @@ const profileSlice = createSlice({
       })
       .addCase(listTransactionAsync.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.transaction = [...state.merges.transaction, action.payload];
+        state.merges.transaction = action.payload
         state.merges.offset = action.payload.offset + 5;
       });
   },

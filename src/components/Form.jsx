@@ -1,22 +1,7 @@
-import {
-  Container,
-  Form,
-  Image,
-  Row,
-  Col,
-  InputGroup,
-  FormControl,
-  Button,
-  Alert,
-} from "react-bootstrap";
+import {Container,Form,Image,Row,Col,InputGroup,FormControl,Button,Alert} from "react-bootstrap";
 import logo from "../assets/Logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEye,
-  faEyeSlash,
-  faLock,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
+import {faEye,faEyeSlash,faLock,faUser} from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUserAsync, loginUserAsync} from "../features/Slice";
@@ -42,14 +27,12 @@ export const FormRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Submitting form...");
-    // Ambil data dari form
     const formData = {
       email: email,
       first_name: firstName,
       last_name: lastName,
       password: confirmPassword,
     };
-    // action registerUserAsync dengan data yang dikumpulkan
     dispatch(registerUserAsync(formData));
 
     setEmail("");
@@ -75,8 +58,6 @@ export const FormRegister = () => {
         navigate('/home');
       }
     });
-  
-    // Reset fields setelah login
     setEmail('');
     setPassword('');
   };

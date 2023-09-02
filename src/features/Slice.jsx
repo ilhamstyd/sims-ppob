@@ -35,8 +35,8 @@ const userSlice = createSlice({
     status: 'idle', 
     error: null,
     message: null,
-    token: null, // Tambahkan default value untuk token
-    user: null,  // Tambahkan default value untuk user
+    token: null, 
+    user: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -62,7 +62,6 @@ const userSlice = createSlice({
         state.status = 'success';
         state.message = action.payload.message;
         state.token = action.payload.token;
-        console.log("ini token bukan", action.payload.token);
         state.user = action.payload.user;
       })
       .addCase(loginUserAsync.rejected, (state, action) => {

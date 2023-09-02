@@ -137,23 +137,22 @@ export const listTransactionAsync = createAsyncThunk(
 const profileSlice = createSlice({
   name: 'profile',
   initialState: {
-    merges:{
+      ...profileAdapter.getInitialState(),
       data: null,
       balance:null,
       services:null,
       banner:null,
       transaction:[],
       offset:0,
-    },
-    error: null,
-    status: 'idle',
+      error: null,
+      status: 'idle',
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.data = action.payload;
+        state.data = action.payload;
       })
       .addCase(editProfileAsync.pending, (state) => {
         state.status = 'loading';
@@ -161,7 +160,7 @@ const profileSlice = createSlice({
       })
       .addCase(editProfileAsync.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.data = action.payload;
+        state.data = action.payload;
       })
       .addCase(editProfileAsync.rejected, (state, action) => {
         state.status = 'failed';
@@ -173,7 +172,7 @@ const profileSlice = createSlice({
       })
       .addCase(editProfileImageAsync.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.data = action.payload;
+        state.data = action.payload;
       })
       .addCase(editProfileImageAsync.rejected, (state, action) => {
         state.status = 'failed';
@@ -181,23 +180,23 @@ const profileSlice = createSlice({
       })
       .addCase(fetchBalance.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.balance = action.payload.balance;
+        state.balance = action.payload.balance;
       })
       .addCase(fetchServices.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.services = action.payload.data;
+        state.services = action.payload.data;
       })
       .addCase(fetchBanner.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.banner = action.payload;
+        state.banner = action.payload;
       })
       .addCase(TopUpMoney.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.balance = action.payload;
+        state.balance = action.payload;
       })
       .addCase(TransactioAsync.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.balance = action.payload;
+        state.balance = action.payload;
       })
       .addCase(TransactioAsync.rejected, (state, action) => {
         state.status = 'failed';
@@ -205,11 +204,11 @@ const profileSlice = createSlice({
       })
       .addCase(listTransactionAsync.fulfilled, (state, action) => {
         state.status = 'success';
-        state.merges.transaction = action.payload
-        state.merges.offset = action.payload.offset + 5;
+        state.transaction = action.payload
+        state.offset = action.payload.offset + 5;
       });
   },
 });
 
 export default profileSlice.reducer;
-export const { selectAll: selectAllprofiles } = profileAdapter.getSelectors((state) => state.profile.merges);
+export const { selectAll: selectAllprofiles } = profileAdapter.getSelectors((state) => state.profile);

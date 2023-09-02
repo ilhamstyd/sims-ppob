@@ -3,7 +3,6 @@ import axios from "axios";
 export const API = axios.create({
     baseURL: "https://take-home-test-api.nutech-integrasi.app",
 })
-
 export const setAuthToken = (token) => {
     if (token) {
       API.defaults.headers.common['Authorization'] = `Bearer ${token}`;

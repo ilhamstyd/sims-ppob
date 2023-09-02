@@ -10,8 +10,8 @@ import { format, parseISO } from "date-fns";
 const ListTransaction = () => {
 
   const dispatch = useDispatch();
-  const transaction = useSelector((state) => state.profile.merges.transaction.data);
-  const offset = useSelector((state) => state.profile.merges.offset);
+  const transaction = useSelector((state) => state.profile.transaction.data);
+  const offset = useSelector((state) => state.profile.offset);
   
   useEffect(() => {
     dispatch(listTransactionAsync(offset));
@@ -28,7 +28,11 @@ const ListTransaction = () => {
         <ComponentProfile />
         <div className="row mt-4">
           <p style={{ fontWeight: "600" }}>Semua Transaksi</p>
-          {transaction?.records?.map((datas, i) => (
+          <div>
+          {transaction?.records?.length === 0 ? (
+            <h1 className="text-center">tidak ada transaksi</h1>
+          ) : (
+          transaction?.records?.map((datas, i) => (
             <div className="card shadow pt-2 ps-3 mb-3" key={i}>
               <div className="d-flex">
                 {datas.description === "Top Up Balance" ? (
@@ -40,11 +44,12 @@ const ListTransaction = () => {
                     -{Rupiah(datas.total_amount)}
                   </p>
                 )}
-                <p className="col-md-6 text-end">{datas.description}</p>
+                <p className="col-md-6 text-end pe-2">{datas.description}</p>
               </div>
               <p className="text-secondary">{format(parseISO(datas.created_on), "dd MMMM yyyy 'pukul' HH:mm") }</p>
             </div>
-          ))}
+          )))}
+          </div>
             <div className="my-5 text-center fw-bold text-danger"
             onClick={handleShowMore}
             style={{ cursor: "pointer" }}> Show more

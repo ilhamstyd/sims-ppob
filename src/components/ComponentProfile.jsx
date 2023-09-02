@@ -14,24 +14,26 @@ const ComponentProfile = () => {
   };
 
   const dispatch = useDispatch();
-  const profiles = useSelector((state) => state.profile.merges);
+  const profiles = useSelector((state) => state.profile.data);
+  const balance = useSelector((state) => state.profile.balance);
   useEffect(() => {
     dispatch(fetchProfile());
+    dispatch(fetchBalance());
   }, [dispatch])
 
   return (
     <div className="row ms-3">
       <div className="col-md-5">
         <Image src={
-            profiles?.data?.profile_image ===
+            profiles?.profile_image ===
             "https://minio.nutech-integrasi.app/take-home-test/null" ? 
             ( profile
             ):(
-            profiles?.data?.profile_image) } style={{ objectFit: "cover", margin: "10px", padding: "10px" }} />
+            profiles?.profile_image) } style={{ objectFit: "cover", margin: "10px", padding: "10px" }} />
         <div>
           <p style={{ margin: 0, padding: 0 }}>Selamat Datang</p>
           <h5>
-            {profiles?.data?.first_name} {profiles?.data?.last_name}
+            {profiles?.first_name} {profiles?.last_name}
           </h5>
         </div>
       </div>
@@ -48,7 +50,7 @@ const ComponentProfile = () => {
           <div className="text-light">
             <p>saldo anda</p>
             {showBalance ? (
-              <h3>{Rupiah(profiles.balance)}</h3>
+              <h3>{Rupiah(balance)}</h3>
             ) : (
               <h3>
                 RP.<span>•••••••</span>

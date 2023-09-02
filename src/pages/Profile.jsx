@@ -14,7 +14,7 @@ export const Profile = () => {
 
   const dispatch = useDispatch();
   const { id } = useParams();
-  const services = useSelector((state) => state.profile.merges.services);
+  const services = useSelector((state) => state.profile.services);
   const selectedService = services && services[id];
 
   const handleTransaction = (e) => {

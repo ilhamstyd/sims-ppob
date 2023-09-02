@@ -1,6 +1,5 @@
 import { LandingPage } from "./pages/LandingPage";
 import { Routes, Route } from "react-router-dom";
-import { Navigationbar } from "./components/Navbar";
 import { HomePage } from "./pages/HomePage";
 import { Profile } from "./pages/Profile";
 import TopUp from "./pages/TopUp";

@@ -74,6 +74,8 @@ export const FormRegister = () => {
     setPassword('');
   };
 
+  
+
   return (
     <>
       <Container>

@@ -7,7 +7,8 @@ import { fetchServices } from "../features/ProfileSlice";
 
 export const Services = () => {
   
-  const banner = useSelector((state) => state.profile.merges.services);
+  const banner = useSelector((state) => state.profile.services);
+  console.log("bagian services :", banner)
   
   const dispatch = useDispatch();
   useEffect(() => {
@@ -18,8 +19,8 @@ export const Services = () => {
   return (
     <div className="mt-4 text-center d-flex">
       {banner?.map((banners, i) => (
-      <div>
-      <Image src={banners.service_icon} className="ms-2 me-2" key={i}/>
+      <div key={i}>
+      <Image src={banners.service_icon} className="ms-2 me-2"/>
       <p style={{ fontSize: "15px", cursor:"pointer"}} onClick={() => navigate(`/profile-buy/${i}`)}>{banners.service_name}</p>
       <div className="d-none">
       <Profile service={banners.service_icon}/>

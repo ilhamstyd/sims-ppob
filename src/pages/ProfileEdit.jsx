@@ -71,7 +71,7 @@ const ProfileEdit = () => {
   };
 
   const dispatch = useDispatch();
-  const profiles = useSelector((state) => state.profile.merges.data);
+  const profiles = useSelector((state) => state.profile.data);
   useEffect(() => {
     dispatch(fetchProfile());
   }, [dispatch]);
